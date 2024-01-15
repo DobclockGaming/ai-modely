@@ -14,103 +14,108 @@ speed_change = 1
 rotation_change = 0.25
 max_wheel_rotation = 30
 
-# Initialise drawing canvas
-root = tkinter.Tk()
-root.title('Autonomous Car Reinforcement Learning AI Demo')
-icon = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/car.png'))
-root.wm_iconphoto(True, icon)
-canvas = tkinter.Canvas(height=720, width = 1080)
+class CarAiApp:
 
-# Draw track and start line
-track_img = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/track.png'))
-canvas.create_image((540, 360), image = track_img)
-start_lane_img = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/startLane.png'))
-canvas.create_image(start_coords, image = start_lane_img)
+    def __init__(self, root):
+        # Loading the photo assets
+        icon = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/car.png'))
+        track_img = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/track.png'))
+        start_lane_img = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/startLane.png'))
+        car_img = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/car.png'))
+       
+        # Setting up the canvas
+        self.root = root
+        self.root.title('Autonomous Car Reinforcement Learning AI Demo')
+        self.root.wm_iconphoto(True, icon)
 
-# Draw the car
-car_img = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/car.png'))
-canvas.create_image(car_coords, image = car_img, tag = 'car')
+        self.canvas = tkinter.Canvas(height=720, width = 1080)
+        self.canvas.pack()
 
-canvas.pack()
+        # Loading the images
+        self.canvas.create_image((540, 360), image = track_img)
+        self.canvas.create_image(start_coords, image = start_lane_img)
+        self.Car = self.canvas.create_image(car_coords, image = car_img)
 
-# Main game timer (currently set to 60 FPS)
-while True:
-    time.sleep(1/60)
+        # Start the simulation
+        self.tick()
 
-    # Simple physics for determining the speed of vehicle and rotation of wheels + their change after keystrokes
-    try:
-        if keyboard.is_pressed('w'):
-            speed += speed_change
-            print('Pressed W key')
-        elif speed > 0: 
-            speed -= speed_change/2
-        elif speed < 0:
-            speed += speed_change/2
-        elif speed_change/2 > speed > 0:
-            speed = 0
-        elif 0 > speed > -speed_change/2:
-            speed = 0
+    def tick(self):
 
-        if keyboard.is_pressed('s'):
-            speed += 1.5*speed_change
-            print('Pressed S key')
-        elif speed > 0: 
-            speed -= speed_change/2
-        elif speed < 0:
-            speed += speed_change/2
-        elif speed_change/2 > speed > 0:
-            speed = 0
-        elif 0 > speed > -speed_change/2:
-            speed = 0
-        
-        if keyboard.is_pressed('a'):
-            wheel_rotation += rotation_change
-            print('Pressed A key')
-        elif keyboard.is_pressed('d'):
-            wheel_rotation -= rotation_change
-            print('Pressed D key')
-        elif wheel_rotation > 0:
-            wheel_rotation -= rotation_change/2
-        elif wheel_rotation < 0:
-            wheel_rotation += rotation_change/2
-        elif rotation_change/2 > wheel_rotation > 0:
-            wheel_rotation = 0
-        elif 0 > wheel_rotation > -rotation_change/2:
-            wheel_rotation = 0
-        break
+        # Algorithm to identify keystrokes and accordingly change the tire direction and speed of the car
+        try:
+            if keyboard.is_pressed('w'):
+                speed += speed_change
+                print('Pressed W key')
+            elif speed > 0: 
+                speed -= speed_change/2
+            elif speed < 0:
+                speed += speed_change/2
+            elif speed_change/2 > speed > 0:
+                speed = 0
+            elif 0 > speed > -speed_change/2:
+                speed = 0
 
-    except:
-
-        if speed > 0: 
-            speed -= speed_change/2
-        elif speed < 0:
-            speed += speed_change/2
-        elif speed_change/2 > speed > 0:
-            speed = 0
-        elif 0 > speed > -speed_change/2:
-            speed = 0
-
-        if wheel_rotation > 0:
-            wheel_rotation -= rotation_change/2
-        elif wheel_rotation < 0:
-            wheel_rotation += rotation_change/2
-        elif rotation_change/2 > wheel_rotation > 0:
-            wheel_rotation = 0
-        elif 0 > wheel_rotation > -rotation_change/2:
-            wheel_rotation = 0
+            if keyboard.is_pressed('s'):
+                speed += 1.5*speed_change
+                print('Pressed S key')
+            elif speed > 0: 
+                speed -= speed_change/2
+            elif speed < 0:
+                speed += speed_change/2
+            elif speed_change/2 > speed > 0:
+                speed = 0
+            elif 0 > speed > -speed_change/2:
+                speed = 0
             
-    if wheel_rotation > max_wheel_rotation:
-        wheel_rotation = max_wheel_rotation
-    elif wheel_rotation < -max_wheel_rotation:
-        wheel_rotation = -max_wheel_rotation
+            if keyboard.is_pressed('a'):
+                wheel_rotation += rotation_change
+                print('Pressed A key')
+            elif keyboard.is_pressed('d'):
+                wheel_rotation -= rotation_change
+                print('Pressed D key')
+            elif wheel_rotation > 0:
+                wheel_rotation -= rotation_change/2
+            elif wheel_rotation < 0:
+                wheel_rotation += rotation_change/2
+            elif rotation_change/2 > wheel_rotation > 0:
+                wheel_rotation = 0
+            elif 0 > wheel_rotation > -rotation_change/2:
+                wheel_rotation = 0
 
-    # Determining the change of position with changed variables from the previous algorithm and changing the position of car
-    rotation += wheel_rotation/2
-    car_coords[0] += math.sin(rotation)*speed
-    car_coords[1] += math.cos(rotation)*speed
-    car_img = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/car.png'))
-    canvas.create_image(car_coords, image = car_img, tag = 'car')
-    canvas.update()
-    
+        except:
 
+            if speed > 0: 
+                speed -= speed_change/2
+            elif speed < 0:
+                speed += speed_change/2
+            elif speed_change/2 > speed > 0:
+                speed = 0
+            elif 0 > speed > -speed_change/2:
+                speed = 0
+
+            if wheel_rotation > 0:
+                wheel_rotation -= rotation_change/2
+            elif wheel_rotation < 0:
+                wheel_rotation += rotation_change/2
+            elif rotation_change/2 > wheel_rotation > 0:
+                wheel_rotation = 0
+            elif 0 > wheel_rotation > -rotation_change/2:
+                wheel_rotation = 0
+            
+        if wheel_rotation > max_wheel_rotation:
+            wheel_rotation = max_wheel_rotation
+        elif wheel_rotation < -max_wheel_rotation:
+            wheel_rotation = -max_wheel_rotation
+
+        # Applying the calculated physics change to the car itself
+        rotation += wheel_rotation/2
+        move_x = math.sin(rotation)*speed
+        move_y = math.cos(rotation)*speed
+        self.canvas.move(self.Car, move_x, move_y)
+
+        self.root.after(16, self.tick)
+
+# Starting the execution process and end of the canvas loop
+root = tkinter.Tk()
+app = CarAiApp(root)
 root.mainloop()
