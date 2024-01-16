@@ -1,8 +1,8 @@
 import tkinter
 from PIL import Image, ImageTk
-import time
 import keyboard
 import math
+import simulation_input as input
 
 # Setting up variables
 start_coords = list((540, 666))
@@ -13,12 +13,12 @@ rotation = 0
 speed_change = 0.25
 rotation_change = 0.0125
 max_wheel_rotation = 0.5
+amogus = 0
 
 class CarAiApp:
 
     def __init__(self, root):
         # Loading the photo assets
-        self.icon = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/car.png'))
         self.track_img = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/track.png'))
         self.start_lane_img = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/startLane.png'))
         self.car_img = ImageTk.PhotoImage(Image.open('examples/reinforcement learning/assets/car.png'))
@@ -26,7 +26,7 @@ class CarAiApp:
         # Setting up the canvas
         self.root = root
         self.root.title('Autonomous Car Reinforcement Learning AI Demo')
-        self.root.wm_iconphoto(True, self.icon)
+        self.root.wm_iconphoto(True, self.car_img)
 
         self.canvas = tkinter.Canvas(height=720, width = 1080)
         self.canvas.pack()
@@ -41,7 +41,7 @@ class CarAiApp:
 
     def tick(self):
 
-        global start_coords, car_coords, speed, wheel_rotation, rotation, speed_change, max_wheel_rotation
+        global start_coords, car_coords, speed, wheel_rotation, rotation, speed_change, max_wheel_rotation, amogus
 
         # Algorithm to identify keystrokes and accordingly change the tire direction and speed of the car
 
@@ -89,6 +89,11 @@ class CarAiApp:
         car_coords[1] += math.sin(-rotation)*speed
         self.canvas.delete(self.Car)
         self.Car = self.canvas.create_image(car_coords, image = self.rotated_car_img)
+
+        amogus+=1
+        if amogus == 60:
+            input.gather_line_distances(Image.open('examples/reinforcement learning/assets/track.png').convert('RGB'), rotation, car_coords[0], car_coords[1], speed, wheel_rotation)
+            amogus = 0
 
         self.root.after(16, self.tick)
 
