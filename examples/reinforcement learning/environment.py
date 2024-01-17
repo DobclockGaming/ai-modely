@@ -3,6 +3,8 @@ from PIL import Image, ImageTk
 import keyboard
 import math
 import simulation_input as input
+import neat
+import ai
 
 # Setting up variables
 start_coords = list((540, 666))
@@ -95,7 +97,25 @@ class CarAiApp:
 
         self.root.after(3, self.tick)
 
-# Starting the execution process and end of the canvas loop
+# Starting the execution process
 root = tkinter.Tk()
 app = CarAiApp(root)
+
+# Loading the AI training
+if __name__ == '__main__':
+    config_path = 'examples\reinforcement learning\config-feedforward.txt'
+    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction, neat.DefaultSpeciesSet, neat.DefaultStagnation, config_path)
+
+    # Adding the core evolution algorithm class
+    p = neat.Population(config)
+
+    # Add reporter for fancy statistical result
+    p.add_reporter(neat.StdOutReporter(True))
+    stats = neat.StatisticsReporter()
+    p.add_reporter(stats)
+
+    # Run NEAT
+    p.run(ai.run_simulation, 1000)
+
+# End of the canvas loop
 root.mainloop()
