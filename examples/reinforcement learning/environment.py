@@ -13,7 +13,6 @@ rotation = 0
 speed_change = 0.25
 rotation_change = 0.0125
 max_wheel_rotation = 0.5
-amogus = 0
 
 class CarAiApp:
 
@@ -41,7 +40,7 @@ class CarAiApp:
 
     def tick(self):
 
-        global start_coords, car_coords, speed, wheel_rotation, rotation, speed_change, max_wheel_rotation, amogus
+        global start_coords, car_coords, speed, wheel_rotation, rotation, speed_change, max_wheel_rotation
 
         # Algorithm to identify keystrokes and accordingly change the tire direction and speed of the car
 
@@ -65,8 +64,10 @@ class CarAiApp:
         if speed != 0:
             if keyboard.is_pressed('a'):
                 wheel_rotation += rotation_change
+                speed -= speed_change                                                       # Just for making an award system easier
             elif keyboard.is_pressed('d'):
                 wheel_rotation -= rotation_change
+                speed -= speed_change                                                       # Just for making an award system easier
             elif wheel_rotation > 0:
                 wheel_rotation -= rotation_change*2
             elif wheel_rotation < 0:
@@ -90,12 +91,9 @@ class CarAiApp:
         self.canvas.delete(self.Car)
         self.Car = self.canvas.create_image(car_coords, image = self.rotated_car_img)
 
-        amogus+=1
-        if amogus == 60:
-            input.gather_line_distances(Image.open('examples/reinforcement learning/assets/track.png').convert('RGB'), rotation, car_coords[0], car_coords[1], speed, wheel_rotation)
-            amogus = 0
+        print(input.gather_line_distances(Image.open('examples/reinforcement learning/assets/track.png').convert('RGB'), rotation, car_coords[0], car_coords[1], speed, wheel_rotation))
 
-        self.root.after(16, self.tick)
+        self.root.after(3, self.tick)
 
 # Starting the execution process and end of the canvas loop
 root = tkinter.Tk()
